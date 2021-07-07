@@ -38,7 +38,7 @@ export default {
       }
       const itemData = {
             item_id: item,
-            user_id: 1,
+            user_id: this.$auth.user.name,
             quantity: Number(this.quantity)
         }
       this.$store.commit("cart/itemAdd", itemData);

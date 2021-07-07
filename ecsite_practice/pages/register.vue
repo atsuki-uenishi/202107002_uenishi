@@ -61,7 +61,7 @@ export default {
             password: this.passwordLogin
           },
         });
-        this.$rooter.push("/top");
+        this.$router.push("/top");
       } catch {
         alert("メールアドレスまたはパスワードが間違っております")
       }
@@ -73,7 +73,10 @@ export default {
           email: this.emailRegister,
           password: this.passwordRegister
         });
-        this.$rooter.push("/register");
+        alert("登録が完了しました")
+        this.name = ""
+        this.emailRegister =""
+        this.passwordRegister = ""
       } catch {
         alert("メールアドレスがすでに登録されています。")
       }

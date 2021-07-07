@@ -51,7 +51,7 @@ export default {
     },
     methods: {
       async getOrders() {
-        const resData = await this.$axios.get("http://127.0.0.1:8000/api/order_detail/", {params: {user_id: 1}});
+        const resData = await this.$axios.get("http://127.0.0.1:8000/api/order_detail/", {params: {user_id: this.$auth.user.name}});
         this.orders = resData.data.data;
       },
       toBuy(id) {
