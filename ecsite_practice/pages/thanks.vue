@@ -25,7 +25,7 @@ export default {
     },
     methods: {
         toTop() {
-            this.$router.push("/top");
+            this.$router.push("/");
         }
     }
 }

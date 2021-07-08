@@ -43,7 +43,7 @@ export default {
                 alert("ログインしてください")
                 return this.$router.push("/register");
                 }
-            this.$router.push("/ordrehistory");
+            this.$router.push("/orderhistory");
         }
     }
 }
