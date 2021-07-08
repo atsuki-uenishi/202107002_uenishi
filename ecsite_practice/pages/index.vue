@@ -56,6 +56,10 @@ export default {
         this.items = resData.data.data;
       },
       toDetail(itemId) {
+        if(!this.$auth.loggedIn) {
+                alert("ログインしてください")
+                return this.$router.push("/register");
+                }
         this.$router.push({path: "/item_detail", query: {itemId: itemId}});
       },
       clickCallback: function (pageNum) {
