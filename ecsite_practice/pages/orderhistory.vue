@@ -55,7 +55,7 @@ export default {
         this.orders = resData.data.data;
       },
       toBuy(id) {
-        this.$router.push({path: '/', query: {itemId: id}});
+        this.$router.push({path: '/item_detail', query: {itemId: id}});
       },
       clickCallback: function (pageNum) {
         this.currentPage = Number(pageNum);

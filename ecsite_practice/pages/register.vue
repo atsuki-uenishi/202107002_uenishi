@@ -61,7 +61,7 @@ export default {
             password: this.passwordLogin
           },
         });
-        this.$router.push("/top");
+        this.$router.push("/");
       } catch {
         alert("メールアドレスまたはパスワードが間違っております")
       }

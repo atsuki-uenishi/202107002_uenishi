@@ -1,133 +1,181 @@
 <template>
-  <div class="detail">
+<div class="top">
     <Header/>
     <div class="container">
-        <div class="item-detail flex">
-          <img class="item-img" :src="item.file_path">
-          <div class="item-data">
-            <p class="item-name">{{item.name}}</p>
-            <p class="item-price">¥{{item.price | locaeString}}(税込)</p>
-            <p class="item-count">個数 <input type="number" v-model="quantity"></p>
-            <button class="cart-btn" @click="toCart(item.id)"><img src="../assets/img/whitecart.png">カートに入れる</button>
-          </div>
+        <div class="firstview">
+            <img class="firstview-img" src="../assets/img/sandal.jpg">
+            <div class="firstview-text">
+                <h2>New Arrivals</h2>
+                <p>for BOYS & GIRLS</p>
+            </div>
+
         </div>
-        <div class="item-description">
-          <h2>毎日履きたくなる、スニーカー。</h2>
-          <p>朝の支度が、格段にラクになる一足。シンプルで飽きの来ないチームコートは、クリーンでモダンな、
-            デザインが魅力。合わせたいのは、デニムやバギースウェット。スタイリッシュなレザーアッパーと
-            フレッシュなカラーが、どんなコーディネートも引き締めてくれる。もちろん、履き心地の良さも言うことなし。
-          </p>
+        <div class="section">
+            <h2 class="section-title">Products</h2>
+            <div class="item-list flex">
+              <div class="item" v-for="item in getItems" :key="item.id">
+                <img class="item-img" :src="item.file_path" @click="toDetail(item.id)">
+                <p>{{item.name}}</p>
+                <p>¥{{item.price | locaeString}}(税込)</p>
+              </div>
+              <paginate
+                :page-count="getPageCount"
+                :page-range="3"
+                :margin-pages="1"
+                :click-handler="clickCallback"
+                :prev-text="'前へ'"
+                :next-text="'次へ'"
+                :container-class="'pagination flex'"
+                :page-class="'pagination-item'"
+                :page-link-class="'pagination-item__link'"
+                :prev-class="'pagination-btn pagination-prev'"
+                :prev-link-class="'pagination-btn__link'"
+                :next-class="'pagination-btn pagination-next'"
+                :next-link-class="'pagination-btn__link'"
+                :hide-prev-next="true"
+            ></paginate>
+            </div>
         </div>
-      </div>
+    </div>
     <Footer/>
-  </div>
+</div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      item: "",
-      quantity: ""
-    }
-  },
-  methods: {
-    toCart(item) {
-      if((this.quantity % 1) !== 0 || Math.sign(this.quantity) !==1){
-        return alert("個数が不適切です");
-      }
-      const itemData = {
-            item_id: item,
-            user_id: this.$auth.user.name,
-            quantity: Number(this.quantity)
+    data() {
+        return{
+          items: [],
+          parPage: 8,
+          currentPage: 1
         }
-      this.$store.commit("cart/itemAdd", itemData);
-      this.$router.push("/cart");
     },
-    async getItem() {
-      const id = this.$route.query.itemId;
-      const resData = await this.$axios.get("http://127.0.0.1:8000/api/item/" + id);
-      this.item = resData.data.data;
-    }
-  },
-  filters: {
+    methods: {
+      async showItems() {
+        const resData = await this.$axios.get("http://127.0.0.1:8000/api/item/");
+        this.items = resData.data.data;
+      },
+      toDetail(itemId) {
+        this.$router.push({path: "/item_detail", query: {itemId: itemId}});
+      },
+      clickCallback: function (pageNum) {
+        this.currentPage = Number(pageNum);
+      }
+    },
+    computed: {
+      getItems() {
+        let current = this.currentPage * this.parPage;
+        let start = current - this.parPage;
+        return this.items.slice(start, current);
+      },
+      getPageCount() {
+        return Math.ceil(this.items.length / this.parPage);
+      }
+    },
+    filters: {
       locaeString(value) {
         if(!value) {
           return 0
         }
         return value.toLocaleString()
-      },
+      }
     },
-  created() {
-    this.getItem()
-  }
+    created() {
+      this.showItems()
+    }
 }
 </script>
 
 <style scoped>
-.detail {
-  width: 100%;
-  height: 100vh;
-}
 .container {
-  width: 50%;
-  height: 80%;
+  width: 90%;
   margin: 0 auto;
 }
-.item-detail {
+.firstview {
+  position: relative;
+}
+.firstview-text {
+  position: absolute;
+  top: 50%;
+  right: 8%;
+}
+.firstview-text h2 {
+  font-size: 4rem;
+  margin-bottom: 15px;
+}
+.firstview-text p {
+  font-size: 1.5rem;
+}
+.firstview-img {
+  object-fit: contain;
   width: 100%;
-  margin: 100px 0 80px;
+  margin: 0 auto;
+  display: block;
 }
 
-.item-data {
-  margin-left: 30px;
-}
-.item-name {
-  font-size: 1.3rem;
+.section {
+  width: 100%;
+  margin: 0 auto;
   margin-top: 10px;
 }
-
-.item-price {
-  font-size: 2em;
-  font-weight: bold;
-  margin-top: 25px;
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 10px;
 }
 
-.item-count {
-  margin-top: 20px;
+.item-list {
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
-.item-data input {
-  border: none;
-  background-color: #eee;
-  width: 100px;
+.item {
+  width: 20%;
+  margin: 5px 5px 20px;
 }
 
 .item-img{
-  width: 200px;
+  width: 100%;
   height: 200px;
-}
-
-.cart-btn {
-  display: block;
-  font-size: 1.1rem;
-  color: #fff;
-  background-color: #97b447;
-  border: 1px solid #97b447;
-  border-radius: 20px;
-  padding: 1px 20px;
-  margin-top: 20px;
+  object-fit: cover;
   cursor: pointer;
 }
-.cart-btn img {
-  vertical-align: middle;
+
+
+
+</style>
+
+<style>
+.pagination {
+  width: 100%;
+  margin: 20px auto 0;
+  justify-content: center;
+  margin-bottom: 40px;
 }
 
-.item-description {
-  width: 100%;
+.pagination-item, .pagination-prev, .pagination-next{
+  list-style: none;
+}
+
+.pagination-btn__link,
+.pagination-item__link {
+  border: solid 2px #97b447;
+  border-radius: 20px;
+  text-align: center;
+  padding: .4rem 1.6rem;
+  margin: 0 .4rem;
   display: block;
 }
-.item-description h2 {
-  margin-bottom: 20px;
+.pagination-btn__link:hover,
+.pagination-item__link:hover {
+  background-color: #97b447;
+  color: #fff;
+}
+.active .pagination-item__link {
+  background-color: #97b447;
+  color: #fff;
+  pointer-events: none;
 }
 </style>
+

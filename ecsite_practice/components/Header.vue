@@ -1,11 +1,11 @@
 <template>
     <header>
-        <h1 class="header-logo">Trace</h1>
+        <h1 class="header-logo" @click="toTop">Trace</h1>
         <nav class="nav">
             <ul class="nav-list">
                 <li v-if="$auth.loggedIn" >Name : {{$auth.user.name}}</li>
-                <li ><nuxt-link to="/cart"><img src="../assets/img/cart.png"></nuxt-link></li>
-                <li><nuxt-link to="/orderhistory"><img src="../assets/img/user.png"></nuxt-link></li>
+                <li ><img @click="toCart" src="../assets/img/cart.png"></li>
+                <li><img @click="toOrderhistory" src="../assets/img/user.png"></li>
                 <li v-if="$auth.loggedIn" class="logout" @click="logout"><img src="../assets/img/logout.png"></li>
             </ul>
         </nav>
@@ -28,6 +28,23 @@ export default {
             }
             this.$store.commit("cart/itemsClear")
         },
+        toTop() {
+            this.$router.push("/");
+        },
+        toCart() {
+            if(!this.$auth.loggedIn) {
+                alert("ログインしてください")
+                return this.$router.push("/register");
+                }
+            this.$router.push("/cart");
+        },
+        toOrderhistory() {
+            if(!this.$auth.loggedIn) {
+                alert("ログインしてください")
+                return this.$router.push("/register");
+                }
+            this.$router.push("/ordrehistory");
+        }
     }
 }
 </script>
@@ -44,6 +61,7 @@ header {
 .header-logo {
     font-size: 2rem;
     margin-left: 10px;
+    cursor: pointer;
 }
 .nav-list {
     display: flex;
@@ -55,6 +73,7 @@ header {
 }
 .nav-list img {
     width: 30px;
+    cursor: pointer;
 }
 li {
     list-style: none;
