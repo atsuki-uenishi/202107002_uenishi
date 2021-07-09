@@ -60,7 +60,6 @@ export default {
       } else {
         return alert('カートが空です')
       }
-      
     },
     updateCount(quantity,i) {
       const newQuantity = {

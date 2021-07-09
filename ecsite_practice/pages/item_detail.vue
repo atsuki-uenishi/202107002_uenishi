@@ -36,7 +36,7 @@ export default {
       if(!this.$auth.loggedIn) {
         alert("ログインしてください")
         return this.$router.push("/register");
-      }  
+      } 
       if((this.quantity % 1) !== 0 || Math.sign(this.quantity) !==1){
         return alert("個数が不適切です");
       }
@@ -45,6 +45,13 @@ export default {
             user_id: this.$auth.user.name,
             quantity: Number(this.quantity)
         }
+      for (let index = 0; index < this.$store.state.cart.items.length; index++) {
+        const cartItem = this.$store.state.cart.items[index];
+        if(item === cartItem.item_id) {
+          this.$store.commit("cart/itemSum", itemData);
+          return this.$router.push("/cart");
+        }
+      }
       this.$store.commit("cart/itemAdd", itemData);
       this.$router.push("/cart");
     },

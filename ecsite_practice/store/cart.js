@@ -6,6 +6,14 @@ export const mutations = {
     itemAdd(state, itemData) {
         state.items.push(itemData);
     },
+    itemSum(state, itemData){
+        for (let index = 0; index < state.items.length; index++) {
+            const item = state.items[index];
+            if(itemData.item_id === item.item_id) {
+                item.quantity += itemData.quantity;
+            }
+        }
+    },
     itemRemove(state, i) {
         state.items.splice(i, 1);
     },
@@ -14,7 +22,7 @@ export const mutations = {
     },
     updateCount (state, newQuantity) {
         state.items[newQuantity.index].quantity = newQuantity.quantity;
-    }
+    },
 };
 
 export const actions = {
